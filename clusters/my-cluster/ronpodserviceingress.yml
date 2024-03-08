@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ronpod
+  labels:
+    app: ronpodlabel
+spec:
+  containers:
+  - image: httpd
+    name: roncontainer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ronservice
+spec:
+  selector:
+    app: ronpodlabel
+  ports:
+    - port: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: roningress
+spec:
+  rules:
+    - host: lib-ronhttpd.ucsd.edu
+      http:
+        paths:
+          - backend:
+              service:
+                name: ronservice
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
